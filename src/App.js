@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
 import Person from './Person/Person';
+
+import './App.css';
 
 class App extends Component {
   state = {
@@ -44,12 +45,13 @@ class App extends Component {
   render() {
     // inline styling
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
-      border: '1px solid blue',
+      border: '2px solid black',
       padding: '8px',
       cursor: 'pointer'
-    }
+    };
 
     let persons = null;
 
@@ -58,7 +60,7 @@ class App extends Component {
         <div>
           {this.state.persons.map( (person, index) => {
             return <Person
-                    click={this.deletePersonHandler.bind(this, index)}
+                    delete={this.deletePersonHandler.bind(this, index)}
                     name={person.name} 
                     age={person.age}
                     key={person.id}
@@ -66,15 +68,32 @@ class App extends Component {
           })}
         </div>
       );
+
+      style.backgroundColor = 'red';
+    }
+
+    let classes = [];
+    
+    if (this.state.persons.length <= 3) {
+      classes.push('App');
+    }
+    
+    if (this.state.persons.length <= 2) {
+      classes.push('red');
+    }
+    
+    if (this.state.persons.length <= 1) {
+      classes.push('bold');
     }
 
     return (
-      <div className="App">
-        <button 
-        style={style}
-        onClick={this.togglePersonHandler} >Toggle Persons</button>  
-        {persons}
-      </div>
+        <div className="App">
+          <p className={classes.join(' ')}>Learning Reaact</p>
+          <button 
+          style={style}
+          onClick={this.togglePersonHandler} >Toggle Persons</button>  
+          {persons}
+        </div>
     );
   }
 }
