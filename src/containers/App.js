@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Persons, Cockpit } from '../components';
-// is there a better way to get App.modules.css???
-import appClasses from './App.module.css';
+import cssClasses from './App.module.css';
 
 class App extends Component {
   state = {
@@ -54,8 +53,9 @@ class App extends Component {
     }
 
     return (
-        <div className={appClasses.App}>
-          <Cockpit 
+        <div className={cssClasses.App}>
+          <Cockpit
+            appTitle={this.props.title}
             showPersons={this.state.showPersons}
             personsLength={this.state.persons.length}
             togglePerson={this.togglePersonHandler}/>
