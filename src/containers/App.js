@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Persons, Cockpit } from '../components';
 import cssClasses from './App.module.css';
+import { withClass } from '../hoc/WithClass';
+import { Auxillary } from '../hoc/Auxillary';
+import { AuthContext } from '../context';
 
 class App extends Component {
 
@@ -11,12 +14,13 @@ class App extends Component {
 
   state = {
     persons: [
-      { id: "sdfsdg", name: "Max", age: "28" },
-      { id: "sdfhtr", name: "Charles", age: "32" },
-      { id: "fdgher", name: "Stacy", age: "26" }
+      { id: "sdfsdg", name: "Max", age: 28 },
+      { id: "sdfhtr", name: "Charles", age: 32 },
+      { id: "fdgher", name: "Stacy", age: 26 }
     ],
     showPersons: false,
-    showCockpit: true
+    showCockpit: true,
+    authenticated: false
   }
 
 //   static getDerivedStateFromProps(props, state) {
@@ -56,24 +60,28 @@ class App extends Component {
     persons[personIndex] = person;
 
     this.setState({ persons: persons});
-  }
+  };
   
   togglePersonHandler = () => {
     const doesShow = this.state.showPersons;
     this.setState({showPersons: !doesShow});
-  }
+  };
 
   toggleCockpitHandler = () => {
     const doesShow = this.state.showCockpit;
     this.setState({showCockpit: !doesShow});
-  }
+  };
 
   deletePersonHandler = (personIndex) => {
     // const persons = this.state.persons.slice();
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
     this.setState({persons: persons});
-  }
+  };
+
+  loginHandler = () => {
+    this.setState({authenticated: true})
+  };
 
   render() {
     console.log('[App.js] render');
@@ -83,24 +91,31 @@ class App extends Component {
       persons = <Persons
                   persons={this.state.persons}
                   deletePerson={this.deletePersonHandler}
-                  nameChanged={this.nameChangedHandler} />;
+                  nameChanged={this.nameChangedHandler}
+                  isAuthenticated={this.state.authenticated} />;
 
     }
 
     return (
-      <div className={cssClasses.App}>
-        <button onClick={() => {this.toggleCockpitHandler()}}>Toggle Cockpit</button>
-        {this.state.showCockpit ? (
-          <Cockpit
-          appTitle={this.props.title}
-          showPersons={this.state.showPersons}
-          personsLength={this.state.persons.length}
-          togglePerson={this.togglePersonHandler}/>
-        ) : null }
-        {persons}
-      </div>
+      <Auxillary classes={cssClasses.App}>
+        <button 
+          onClick={() => {this.toggleCockpitHandler()}}>Toggle Cockpit</button>
+          <AuthContext.Provider 
+            value={{authenticated: this.state.authenticated,
+                    login: this.loginHandler
+                    }}>
+              {this.state.showCockpit ? (
+                <Cockpit
+                appTitle={this.props.title}
+                showPersons={this.state.showPersons}
+                personsLength={this.state.persons.length}
+                togglePerson={this.togglePersonHandler} />
+              ) : null }
+              {persons}
+          </AuthContext.Provider>
+      </Auxillary>
     );
   }
 }
 
-export default App;
+export default withClass(App, cssClasses.App);
