@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Person } from './Person';
+import { Persons, Cockpit } from '../components';
+// is there a better way to get App.modules.css???
 import appClasses from './App.module.css';
-import { ErrorBoundary } from './ErrorBoundary';
 
 class App extends Component {
   state = {
@@ -44,46 +44,21 @@ class App extends Component {
 
   render() {
     let persons = null;
-    let btnClass = '';
 
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map( (person, index) => {
-            return <ErrorBoundary key={person.id}>
-                      <Person
-                        delete={this.deletePersonHandler.bind(this, index)}
-                        name={person.name} 
-                        age={person.age}
-                        changed={(event) => this.nameChangedHandler(event, person.id)} />
-                    </ErrorBoundary> 
-          })}
-        </div>
-      );
+      persons = <Persons
+                  persons={this.state.persons}
+                  deletePerson={this.deletePersonHandler}
+                  nameChanged={this.nameChangedHandler} />;
 
-      btnClass = appClasses.Red;
-    }
-
-    let assignedClasses = [];
-    
-    if (this.state.persons.length <= 3) {
-      assignedClasses.push( appClasses.App );
-    }
-    
-    if (this.state.persons.length <= 2) {
-      assignedClasses.push( appClasses.red );
-    }
-    
-    if (this.state.persons.length <= 1) {
-      assignedClasses.push( appClasses.bold );
     }
 
     return (
         <div className={appClasses.App}>
-          <p className={assignedClasses.join(' ')}>Learning Reaact</p>
-          <button
-            className={btnClass}
-            onClick={this.togglePersonHandler} >Toggle Persons</button>  
+          <Cockpit 
+            showPersons={this.state.showPersons}
+            personsLength={this.state.persons.length}
+            togglePerson={this.togglePersonHandler}/>
           {persons}
         </div>
     );
